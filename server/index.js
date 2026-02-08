@@ -24,8 +24,18 @@ function countTokens(text) {
 }
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: '*', // Allow all origins for now (simplifies debugging)
+    methods: ['GET', 'POST', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
+
+// Request Logger Middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
 
 const PORT = process.env.PORT || 3000;
 
