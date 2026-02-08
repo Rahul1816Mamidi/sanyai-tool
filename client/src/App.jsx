@@ -118,6 +118,7 @@ function App() {
         setSmartPromptData(res.data);
     } catch (error) {
         console.error("Smart Prompt failed", error);
+        // Optional: Notify user of smart prompt failure
     } finally {
         setIsSmartPromptLoading(false);
     }
@@ -179,9 +180,28 @@ function App() {
       setMessages(prev => [...prev, assistantMessage]);
     } catch (error) {
       console.error("Error sending message", error);
+      let errorText = "Error: Could not reach the server. Please try again.";
+      
+      const attemptedUrl = `${API_URL}/chat`;
+
+      if (error.response) {
+        // The request was made and the server responded with a status code
+        // that falls out of the range of 2xx
+        errorText = `Error ${error.response.status}: ${error.response.data?.error || error.response.statusText}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        errorText = `Network Error: No response from ${API_URL}. Check if Backend is running.`;
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        errorText = `Request Error: ${error.message}`;
+      }
+
+      // Add debug info to the error message displayed to the user
+      errorText += ` (Target: ${API_URL})`;
+
       const errorMessage = {
         role: 'assistant',
-        content: "Error: Could not reach the server. Please try again.",
+        content: errorText,
         id: Date.now().toString() + 'e',
         isError: true
       };
@@ -765,6 +785,10 @@ function App() {
             </div>
         </div>
       </main>
+      {/* Debug Info Overlay */}
+      <div className="fixed bottom-1 right-1 text-[10px] text-gray-500 opacity-30 hover:opacity-100 pointer-events-none z-50">
+        API: {API_URL}
+      </div>
     </div>
   );
 }
