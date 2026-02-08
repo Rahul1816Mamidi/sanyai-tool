@@ -51,6 +51,37 @@ Railway can automatically detect the monorepo structure.
 
 ---
 
+## 🏡 Option 3: Self-Hosted on Coolify (Best for Control)
+
+Coolify is an open-source & self-hostable alternative to Vercel/Netlify.
+
+**Prerequisites**: A VPS (Virtual Private Server) from providers like Hetzner, DigitalOcean, or AWS EC2 with Coolify installed.
+
+### Part A: Deploy Backend (Coolify)
+1.  In your Coolify dashboard, create a new **Project** -> **New Resource** -> **Public Repository**.
+2.  Enter your GitHub URL: `https://github.com/Rahul1816Mamidi/sanyai-tool`.
+3.  **Configuration**:
+    *   **Build Pack**: Dockerfile (We added a `Dockerfile` to `/server`).
+    *   **Base Directory**: `/server`
+    *   **Port**: 3000
+    *   **Environment Variables**: Add your API keys (`SERP_API_KEY`, etc.).
+4.  **Deploy**.
+5.  Copy the generated URL (e.g., `https://api.yourdomain.com`).
+
+### Part B: Deploy Frontend (Coolify)
+1.  Add another **New Resource** -> **Public Repository**.
+2.  Use the same GitHub URL.
+3.  **Configuration**:
+    *   **Build Pack**: Static Site (Nixpacks).
+    *   **Base Directory**: `/client`
+    *   **Build Command**: `npm install && npm run build`
+    *   **Publish Directory**: `dist`
+    *   **Environment Variables**:
+        *   `VITE_API_URL`: Your Backend URL from Part A.
+4.  **Deploy**.
+
+---
+
 ## ✅ Post-Deployment Checks
 1.  Open your Vercel frontend URL.
 2.  Check if the "Smart Prompt" feature works (hits the backend).
